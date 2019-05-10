@@ -84,7 +84,7 @@ class CoverageService extends CoverageServiceBase {
       throw GrpcError.internal('NO_PERCENTAGE_FOUND');
     }
     await projectDirectory.delete(recursive: true);
-    requestLogger.info('send coverate for $name $coverage%');
+    requestLogger.info('send coverage for $name $coverage%');
     return GetCoverageResponse()..coverage = coverage;
   }
 
