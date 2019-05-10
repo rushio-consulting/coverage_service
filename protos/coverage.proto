@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package rushio.coverage;
+
+message GetCoverageRequest { bytes zip = 1; }
+
+message GetCoverageResponse { double coverage = 1; }
+
+service CoverageService {
+  rpc getCoverage(GetCoverageRequest) returns (GetCoverageResponse);
+}

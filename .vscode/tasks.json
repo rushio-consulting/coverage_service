@@ -1,0 +1,12 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "generate code from protos",
+      "type": "shell",
+      "command": "protoc --dart_out=grpc:lib/src/generated -Iprotos coverage.proto"
+    }
+  ]
+}
