@@ -21,7 +21,7 @@ class Cli {
     _d = Directory(projectPath);
   }
 
-  Future<double> getCoverate() async {
+  Future<double> getCoverage() async {
     final files = _d.listSync(recursive: true);
     final archive = Archive();
     for (final file in files) {

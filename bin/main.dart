@@ -24,7 +24,7 @@ Future<void> main(List<String> args) async {
           ),
         ),
   );
-  final coverage = await cli.getCoverate();
+  final coverage = await cli.getCoverage();
   await cli.shutdown();
   Logger.root.info('coverage: $coverage%');
 }
