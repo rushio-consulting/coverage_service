@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:coverage_service/src/generated/coverage.pbgrpc.dart';
+import 'package:coverage_service/src/service/coverage/base.dart';
 import 'package:coverage_service/src/service/coverage/dart.dart';
 import 'package:coverage_service/src/service/coverage/flutter.dart';
 import 'package:grpc/grpc.dart';
@@ -20,9 +21,6 @@ class CoverageService extends CoverageServiceBase {
       ServiceCall call, GetCoverageRequest request) async {
     if (!request.hasZip()) {
       throw GrpcError.invalidArgument('NO_ZIP');
-    }
-    if (request.zip.isEmpty) {
-      throw GrpcError.invalidArgument('EMPTY_ZIP');
     }
     final bytes = request.zip;
     final uuid = Uuid();
@@ -52,7 +50,7 @@ class CoverageService extends CoverageServiceBase {
     final requestLogger = Logger('CoverageService.$name');
     requestLogger.fine('Check if it\'s Flutter');
     final isFlutter = await _isFlutterProject(pubspec);
-    var packageCoverage;
+    Coverage packageCoverage;
     if (isFlutter) {
       requestLogger.fine('Flutter project');
       packageCoverage = FlutterPackageCoverage();
