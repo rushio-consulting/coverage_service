@@ -52,15 +52,15 @@ class CoverageService extends CoverageServiceBase {
     final requestLogger = Logger('CoverageService.$name');
     requestLogger.fine('Check if it\'s Flutter');
     final isFlutter = await _isFlutterProject(pubspec);
+    var packageCoverage;
     if (isFlutter) {
       requestLogger.fine('Flutter project');
-      final flutter = FlutterPackageCoverage();
-      await flutter.getCoverage(requestLogger, projectDirectory.path);
+      packageCoverage = FlutterPackageCoverage();
     } else {
       requestLogger.fine('Dart project');
-      final dart = DartPackageCoverage();
-      await dart.getCoverage(requestLogger, projectDirectory.path);
+      packageCoverage = DartPackageCoverage();
     }
+    await packageCoverage.getCoverage(requestLogger, projectDirectory.path);
     requestLogger.info('genhtml');
     final genHtmlResult = await Process.run(
       'genhtml',
