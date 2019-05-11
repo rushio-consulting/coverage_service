@@ -12,6 +12,8 @@ import 'package:protobuf/protobuf.dart' as $pb;
 class GetCoverageRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('GetCoverageRequest', package: const $pb.PackageName('rushio.coverage'))
     ..a<List<int>>(1, 'zip', $pb.PbFieldType.OY)
+    ..aOB(2, 'deleteFolder')
+    ..aOS(3, 'id')
     ..hasRequiredFields = false
   ;
 
@@ -34,6 +36,16 @@ class GetCoverageRequest extends $pb.GeneratedMessage {
   set zip(List<int> v) { $_setBytes(0, v); }
   bool hasZip() => $_has(0);
   void clearZip() => clearField(1);
+
+  bool get deleteFolder => $_get(1, false);
+  set deleteFolder(bool v) { $_setBool(1, v); }
+  bool hasDeleteFolder() => $_has(1);
+  void clearDeleteFolder() => clearField(2);
+
+  String get id => $_getS(2, '');
+  set id(String v) { $_setString(2, v); }
+  bool hasId() => $_has(2);
+  void clearId() => clearField(3);
 }
 
 class GetCoverageResponse extends $pb.GeneratedMessage {

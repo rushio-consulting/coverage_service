@@ -5,16 +5,41 @@ part 'options.g.dart';
 @CliOptions()
 class Options {
   @CliOption(
-      abbr: 'p',
-      help: 'Required. The path of the project you want to get coverage')
+    abbr: 'p',
+    help: 'Required. The path of the project you want to get coverage',
+  )
   final String projectPath;
 
   final bool projectPathWasParsed;
 
-  @CliOption(negatable: false, help: 'Print usage information')
+  @CliOption(
+    negatable: false,
+    help: 'Print usage information',
+    defaultsTo: false,
+  )
   final bool help;
 
-  Options(this.projectPath, {this.help = false, this.projectPathWasParsed});
+  @CliOption(
+    negatable: false,
+    help: 'Delete folder after getting coverage',
+    abbr: 'd',
+    defaultsTo: false,
+  )
+  final bool deleteFolder;
+
+  @CliOption(
+    abbr: 'i',
+    help: 'Specify id for the generated folder',
+  )
+  final String id;
+
+  Options(
+    this.projectPath, {
+    this.help = false,
+    this.projectPathWasParsed,
+    this.deleteFolder = false,
+    this.id,
+  });
 }
 
 ArgParser get parser => _$parserForOptions;

@@ -16,6 +16,7 @@ Future<void> main(List<String> args) async {
   }
   final cli = Cli(
     options.projectPath,
+    options.deleteFolder,
     () => ClientChannel(
           '127.0.0.1',
           port: 40000,
@@ -24,7 +25,7 @@ Future<void> main(List<String> args) async {
           ),
         ),
   );
-  final coverage = await cli.getCoverage();
+  final coverage = await cli.getCoverage(options.id);
   await cli.shutdown();
   Logger.root.info('coverage: $coverage%');
 }

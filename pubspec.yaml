@@ -7,6 +7,10 @@ author: Rushio Consulting <dev@rushio-consulting.fr>
 environment:
   sdk: '>=2.1.0 <3.0.0'
 
+executable:
+  coverage_cli: main
+  coverage_server: server
+
 dependencies:
   grpc: ^1.0.2
   protobuf: ^0.13.11

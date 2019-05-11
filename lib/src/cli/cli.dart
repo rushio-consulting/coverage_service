@@ -9,19 +9,20 @@ typedef ClientChannel ClientChannelBuilder();
 
 class Cli {
   final String projectPath;
+  final bool deleteFolder;
   final ClientChannelBuilder clientChannelBuilder;
 
   ClientChannel _clientChannel;
   CoverageServiceClient _coverageServiceClient;
   Directory _d;
 
-  Cli(this.projectPath, this.clientChannelBuilder) {
+  Cli(this.projectPath, this.deleteFolder, this.clientChannelBuilder) {
     _clientChannel = clientChannelBuilder();
     _coverageServiceClient = CoverageServiceClient(_clientChannel);
     _d = Directory(projectPath);
   }
 
-  Future<double> getCoverage() async {
+  Future<double> getCoverage(String id) async {
     final files = _d.listSync(recursive: true);
     final archive = Archive();
     for (final file in files) {
@@ -35,7 +36,10 @@ class Cli {
     }
     final bytes = ZipEncoder().encode(archive);
     final response = await _coverageServiceClient.getCoverage(
-      GetCoverageRequest()..zip = bytes,
+      GetCoverageRequest()
+        ..zip = bytes
+        ..deleteFolder = deleteFolder
+        ..id = id ?? '',
     );
     return response.coverage;
   }

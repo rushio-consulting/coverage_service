@@ -2,7 +2,11 @@ syntax = "proto3";
 
 package rushio.coverage;
 
-message GetCoverageRequest { bytes zip = 1; }
+message GetCoverageRequest {
+  bytes zip = 1;
+  bool deleteFolder = 2;
+  string id = 3;
+}
 
 message GetCoverageResponse { double coverage = 1; }
 

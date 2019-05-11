@@ -23,8 +23,9 @@ class CoverageService extends CoverageServiceBase {
       throw GrpcError.invalidArgument('NO_ZIP');
     }
     final bytes = request.zip;
-    final uuid = Uuid();
-    final id = uuid.v1();
+    final id =
+        request.hasId() && request.id.isNotEmpty ? request.id : _generateId();
+    logger.fine('id is $id');
     var projectDirectory = Directory('/tmp/$id');
     logger.info('start coverage ');
     logger.info('extract from zip');
@@ -43,6 +44,9 @@ class CoverageService extends CoverageServiceBase {
     logger.info('end extract from zip');
     final pubspec = File('${projectDirectory.path}/pubspec.yaml');
     if (!await pubspec.exists()) {
+      if (request.deleteFolder) {
+        await projectDirectory.delete(recursive: true);
+      }
       throw GrpcError.invalidArgument('NO_PUBSPEC');
     }
     logger.fine('get project name');
@@ -53,10 +57,10 @@ class CoverageService extends CoverageServiceBase {
     Coverage packageCoverage;
     if (isFlutter) {
       requestLogger.fine('Flutter project');
-      packageCoverage = FlutterPackageCoverage();
+      packageCoverage = FlutterPackageCoverage(request.deleteFolder);
     } else {
       requestLogger.fine('Dart project');
-      packageCoverage = DartPackageCoverage();
+      packageCoverage = DartPackageCoverage(request.deleteFolder);
     }
     await packageCoverage.getCoverage(requestLogger, projectDirectory.path);
     requestLogger.info('genhtml');
@@ -67,6 +71,9 @@ class CoverageService extends CoverageServiceBase {
       runInShell: true,
       stdoutEncoding: utf8,
     );
+    requestLogger.info('rename /tmp/$id to /tmp/rushio-gen-coverage-$name-$id');
+    projectDirectory =
+        await projectDirectory.rename('/tmp/rushio-gen-coverage-$name-$id');
     requestLogger.info('extract coverage percentage');
     final String out = genHtmlResult.stdout;
     final percentageLineRegExp = RegExp(r'^\s+lines.+: (\d+.\d*)%.+$');
@@ -74,18 +81,29 @@ class CoverageService extends CoverageServiceBase {
         (line) => percentageLineRegExp.hasMatch(line),
         orElse: () => null);
     if (line == null) {
-      await projectDirectory.delete(recursive: true);
+      if (request.deleteFolder) {
+        await projectDirectory.delete(recursive: true);
+      }
       throw GrpcError.internal('NO_PERCENTAGE_FOUND');
     }
     final coverage =
         num.tryParse(percentageLineRegExp.firstMatch(line).group(1));
     if (coverage == null) {
-      await projectDirectory.delete(recursive: true);
+      if (request.deleteFolder) {
+        await projectDirectory.delete(recursive: true);
+      }
       throw GrpcError.internal('NO_PERCENTAGE_FOUND');
     }
-    await projectDirectory.delete(recursive: true);
+    if (request.deleteFolder) {
+      await projectDirectory.delete(recursive: true);
+    }
     requestLogger.info('send coverage for $name $coverage%');
     return GetCoverageResponse()..coverage = coverage;
+  }
+
+  String _generateId() {
+    final uuid = Uuid();
+    return uuid.v1();
   }
 
   Future<String> _getProjectName(File pubspec) async {

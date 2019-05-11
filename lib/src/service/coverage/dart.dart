@@ -9,10 +9,15 @@ import 'package:grpc/grpc.dart';
 import 'package:logging/logging.dart';
 
 class DartPackageCoverage extends Coverage {
+  DartPackageCoverage(bool deleteFolder) : super(deleteFolder);
+
   @override
   Future<void> getCoverage(Logger requestLogger, String path) async {
     final projectDirectory = Directory(path);
     if (!await File('${projectDirectory.path}/test/coverage.dart').exists()) {
+      if (deleteFolder) {
+        await projectDirectory.delete();
+      }
       throw GrpcError.invalidArgument('DOESNT_CONTAINS_COVERAGE');
     }
     requestLogger.info('pub get');
@@ -80,7 +85,9 @@ class DartPackageCoverage extends Coverage {
         .transform(utf8.decoder)
         .transform(LineSplitter())
         .listen((line) {
-      completer.completeError(line);
+      if (!completer.isCompleted) {
+        completer.completeError(line);
+      }
     });
     return completer.future;
   }
