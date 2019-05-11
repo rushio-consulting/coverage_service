@@ -71,9 +71,9 @@ class CoverageService extends CoverageServiceBase {
       runInShell: true,
       stdoutEncoding: utf8,
     );
-    requestLogger.info('rename /tmp/$id to /tmp/rushio-gen-coverage-$name-$id');
+    requestLogger.info('rename /tmp/$id to /tmp/rushio-gen-coverage-$id');
     projectDirectory =
-        await projectDirectory.rename('/tmp/rushio-gen-coverage-$name-$id');
+        await projectDirectory.rename('/tmp/rushio-gen-coverage-$id');
     requestLogger.info('extract coverage percentage');
     final String out = genHtmlResult.stdout;
     final percentageLineRegExp = RegExp(r'^\s+lines.+: (\d+.\d*)%.+$');
