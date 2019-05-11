@@ -17,14 +17,17 @@ ArgParser _$populateOptionsParser(ArgParser parser) => parser
   ..addOption('project-path',
       abbr: 'p',
       help: 'Required. The path of the project you want to get coverage')
-  ..addFlag('help',
-      help: 'Print usage information', defaultsTo: false, negatable: false)
   ..addFlag('delete-folder',
       abbr: 'd',
       help: 'Delete folder after getting coverage',
       defaultsTo: false,
       negatable: false)
-  ..addOption('id', abbr: 'i', help: 'Specify id for the generated folder');
+  ..addOption('id', abbr: 'i', help: 'Specify id for the generated folder')
+  ..addFlag('help',
+      abbr: 'h',
+      help: 'Print usage information',
+      defaultsTo: false,
+      negatable: false);
 
 final _$parserForOptions = _$populateOptionsParser(ArgParser());
 

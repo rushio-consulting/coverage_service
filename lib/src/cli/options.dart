@@ -14,13 +14,6 @@ class Options {
 
   @CliOption(
     negatable: false,
-    help: 'Print usage information',
-    defaultsTo: false,
-  )
-  final bool help;
-
-  @CliOption(
-    negatable: false,
     help: 'Delete folder after getting coverage',
     abbr: 'd',
     defaultsTo: false,
@@ -32,6 +25,14 @@ class Options {
     help: 'Specify id for the generated folder',
   )
   final String id;
+
+  @CliOption(
+    negatable: false,
+    help: 'Print usage information',
+    defaultsTo: false,
+    abbr: 'h',
+  )
+  final bool help;
 
   Options(
     this.projectPath, {
