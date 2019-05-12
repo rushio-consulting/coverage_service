@@ -23,13 +23,14 @@ then
   git remote add origin "https://$GH_TOKEN_CI_TRAVIS@$GITHUB_REPOSITORY"
   git fetch origin
   git pull origin master
-
+  
   #GIT_TAG=$VERSION-${TRAVIS_COMMIT:0:12}
   GIT_TAG=v$VERSION
 
   #git add -u
   #git commit -m "Update from TravisCI build $TRAVIS_BUILD_NUMBER"
   git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
+  git push --set-upstream origin master
   git push --follow-tags
 
   cd ..
