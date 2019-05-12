@@ -1,4 +1,4 @@
-A sample command-line application.
+[![Build Status](https://api.travis-ci.org/rushio-consulting/coverage_service.svg?branch=master)](https://api.travis-ci.org/rushio-consulting/coverage_service)
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+ # Dart code coverage service 
+
