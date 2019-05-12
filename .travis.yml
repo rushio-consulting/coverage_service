@@ -1,0 +1,45 @@
+sudo: required
+
+language: dart
+
+dart:
+  # Install the latest stable release
+  - stable
+
+env:
+  global:
+     - CURRENT=$(pwd)
+     - DOCKER_REPOSITORY=rushioconsulting/coverageservice
+
+     # build version - also used to tag github repo and docker hub image
+     - VERSION=latest
+
+services:
+- docker
+
+before_install:
+  # Check current docker engine version
+  - docker --version
+
+  # set env vars in the build settings to interact with repositories
+  # see https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings
+  - echo "Testing Docker Hub credentials"
+  - docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+
+install:
+  - docker pull ${DOCKER_REPOSITORY}:latest || true
+  - docker build -t ${DOCKER_REPOSITORY} --pull=true --build-arg version=${VERSION} .
+  - docker build -t ${DOCKER_REPOSITORY}:${VERSION} --build-arg version=${VERSION} .
+
+before_deploy:
+   # CREATE GIT TAG
+  - ./ci/github.sh
+
+deploy:
+
+    # Deploy to docker hub
+    provider: script
+    script: ./ci/dockerhub.sh
+    skip_cleanup: true
+    on:
+      branch: master  
