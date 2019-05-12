@@ -3,4 +3,4 @@
 # @description : 
 #
 
-dart bin/server.dart
+dart bin/server.dart &
