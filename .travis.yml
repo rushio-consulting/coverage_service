@@ -33,13 +33,13 @@ install:
 
 before_deploy:
    # CREATE GIT TAG
-  - ./ci/github.sh
+  - /bin/bash ./ci/github.sh
 
 deploy:
 
     # Deploy to docker hub
     provider: script
-    script: ./ci/dockerhub.sh
+    script: /bin/bash ./ci/dockerhub.sh
     skip_cleanup: true
     on:
       branch: master  
