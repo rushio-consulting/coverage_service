@@ -16,4 +16,4 @@ dart bin/main.dart \
 #TODO: Check if last command success 
 
 #TODO: Check if the ouput dir exist
-mv $EXPECTED_OUTPUT_COVERAGE_DIR  /coverage-project/
+sudo mv $EXPECTED_OUTPUT_COVERAGE_DIR  /coverage-project/
