@@ -12,7 +12,7 @@ env:
      - DOCKER_REPOSITORY=rushioconsulting/coverageservice
      - GITHUB_REPOSITORY=github.com/rushio-consulting/coverage_service.git
      # build version - also used to tag github repo and docker hub image
-     - VERSION=1-SNAPSHOT
+     - VERSION=0.1.0-dev #FIXME : how to manage version with the one in pubspec.yaml
 
 services:
 - docker

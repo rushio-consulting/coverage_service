@@ -2,12 +2,12 @@
 #============================================================================================================#
 #title           :github.sh
 #description     :Enable action remotely on github
-#author		     :bwnyasse
+#author		       :bwnyasse
 #===========================================================================================================#
 set -o errexit -o nounset
 
 # Push tag only if it's not a SNAPSHOT build
-if  [[ "$TRAVIS_BRANCH" == "master" && "$VERSION" != *"SNAPSHOT"* ]]
+if  [[ "$TRAVIS_BRANCH" == "master" && "$VERSION" != *"dev"* ]]
 then
   #echo "This commit was made against the $TRAVIS_BRANCH and the master! No deploy!"
   rev=$(git rev-parse --short HEAD)
@@ -25,7 +25,7 @@ then
   git pull origin master
   
   #GIT_TAG=$VERSION-${TRAVIS_COMMIT:0:12}
-  GIT_TAG=v$VERSION
+  GIT_TAG=$VERSION
 
   #git add -u
   #git commit -m "Update from TravisCI build $TRAVIS_BUILD_NUMBER"
