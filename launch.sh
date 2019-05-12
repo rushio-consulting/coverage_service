@@ -8,6 +8,12 @@ if [ $status -ne 0 ]; then
   exit $status
 fi
 
+while ! curl -s localhost:40000/  > /dev/null
+do
+log_info "Still waiting for server to be up and running"
+sleep 1
+done
+
 # Start the second process
 ./main.sh -D
 status=$?
