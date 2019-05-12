@@ -6,7 +6,12 @@
     {
       "label": "generate code from protos",
       "type": "shell",
-      "command": "protoc --dart_out=grpc:lib/src/generated -Iprotos coverage.proto"
-    }
+      "command": "protoc",
+      "args": [
+        "--dart_out=grpc:lib/src/generated",
+        "-Iprotos",
+        "coverage.proto"
+      ]
+    },
   ]
 }
