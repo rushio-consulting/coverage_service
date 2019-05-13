@@ -1,6 +1,6 @@
 FROM cirrusci/flutter
 
-VOLUME /coverage-project
+VOLUME /app
 
 # ADD current project into /service directory in the image
 # Omit the test directory
