@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PATH="$PATH":"$HOME/.pub-cache/bin"
+
 # Start the first process
 ./server.sh -D
 status=$?

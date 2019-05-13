@@ -26,7 +26,6 @@ USER cirrus
 WORKDIR /service
 
 RUN pub global activate coverage && \
-    export PATH="$PATH":"$HOME/.pub-cache/bin" && \
     pub get
 
 # Define default command
