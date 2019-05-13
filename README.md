@@ -1,4 +1,5 @@
 [![Build Status](https://api.travis-ci.org/rushio-consulting/coverage_service.svg?branch=master)](https://travis-ci.org/rushio-consulting/coverage_service)
+[![codecov](https://codecov.io/gh/rushio-consulting/coverage_service/branch/master/graph/badge.svg)](https://codecov.io/gh/rushio-consulting/coverage_service)
 
 # Code Coverage Service
 
