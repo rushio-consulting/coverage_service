@@ -30,4 +30,4 @@ RUN pub global activate coverage && \
     pub get
 
 # Define default command
-CMD ["/launch.sh"]
+CMD ["/service/launch.sh"]
