@@ -32,6 +32,8 @@ install:
   - docker build -t ${DOCKER_REPOSITORY}:${VERSION} --build-arg version=${VERSION} .
 
 before_deploy:
+  # CREATE CODECOV
+  - /bin/bash ./ci/codecov.sh
    # CREATE GIT TAG
   - /bin/bash ./ci/github.sh
 
