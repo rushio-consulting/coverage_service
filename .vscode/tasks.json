@@ -13,5 +13,17 @@
         "coverage.proto"
       ]
     },
+    {
+      "label": "generate coverage",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-v",
+        "${workspaceFolder}:/coverage-project",
+        "rushioconsulting/coverage_service",
+      ]
+    }
   ]
 }
