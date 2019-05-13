@@ -5,7 +5,7 @@ import 'package:coverage_service/coverage_service.dart';
 import 'package:logging/logging.dart';
 
 Future<void> main() async {
-  Logger.root.level = Level.ALL;
+  Logger.root.level = Level.OFF;
   Logger.root.onRecord.listen(print);
 
   final port =

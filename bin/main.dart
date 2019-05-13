@@ -3,7 +3,7 @@ import 'package:grpc/grpc.dart';
 import 'package:logging/logging.dart';
 
 Future<void> main(List<String> args) async {
-  Logger.root.level = Level.ALL;
+  Logger.root.level = Level.OFF;
   Logger.root.onRecord.listen(print);
 
   final options = parseOptions(args);
@@ -28,4 +28,5 @@ Future<void> main(List<String> args) async {
   final coverage = await cli.getCoverage(options.id);
   await cli.shutdown();
   Logger.root.info('coverage: $coverage%');
+  print(coverage);
 }
