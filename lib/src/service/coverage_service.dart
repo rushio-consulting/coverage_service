@@ -71,6 +71,7 @@ class CoverageService extends CoverageServiceBase {
       runInShell: true,
       stdoutEncoding: utf8,
     );
+    requestLogger.info('rewrite lcov path');
     await _rewriteLcovPath(projectDirectory.path);
     requestLogger.info('rename /tmp/$id to /tmp/rushio-gen-coverage-$id');
     projectDirectory =
@@ -109,16 +110,19 @@ class CoverageService extends CoverageServiceBase {
     final regExpString = '^SF:\/tmp\/$projectId/(.*)\$';
     logger.info(regExpString);
     final regExp = RegExp(regExpString);
+    final newLines = <String>[];
     for (final line in lines) {
       logger.info(line);
       if (regExp.hasMatch(line)) {
         final match = regExp.firstMatch(line);
         final keep = match.group(1);
         logger.info(keep);
-        line.replaceFirst(line, 'SF:$keep');
+        newLines.add(line.replaceFirst(line, 'SF:$keep'));
+      } else {
+        newLines.add(line);
       }
     }
-    await lcov.writeAsString(lines.join('\n'));
+    await lcov.writeAsString(newLines.join('\n'));
   }
 
   String _generateId() {
