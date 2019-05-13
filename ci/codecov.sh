@@ -7,7 +7,7 @@
 set -o errexit -o nounset
 
 # Push tag only if it's not a SNAPSHOT build
-if  [[ "$TRAVIS_BRANCH" == "master" && "$VERSION" != *"dev"* ]]
+if  [[ "$TRAVIS_BRANCH" == "master" ]]
 then
     cd $CURRENT
 
