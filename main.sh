@@ -17,4 +17,4 @@ dart bin/main.dart \
 # rm -rf $EXPECTED_OUTPUT_COVERAGE_DIR || true # Ignore error in case the directory does not exsit
 
 #TODO: Check if the ouput dir exist
-sudo mv $EXPECTED_OUTPUT_COVERAGE_DIR/coverage  /coverage-project/
+sudo mv $EXPECTED_OUTPUT_COVERAGE_DIR  /coverage-project/
