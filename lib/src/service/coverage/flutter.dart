@@ -7,7 +7,7 @@ class FlutterPackageCoverage extends Coverage {
   FlutterPackageCoverage(bool deleteFolder) : super(deleteFolder);
 
   @override
-  Future<void> getCoverage(Logger requestLogger, String path) async {
+  Future<void> generateCoverage(Logger requestLogger, String path) async {
     requestLogger.fine('flutter test --coverage');
     final projectDirectory = Directory(path);
     await Process.run(

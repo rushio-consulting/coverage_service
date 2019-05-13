@@ -20,6 +20,8 @@ dependencies:
   pedantic: ^1.0.0
   build_cli_annotations: ^1.1.0
   yaml: ^2.1.15
+  mockito: ^4.0.0
+
 
 dev_dependencies:
   test: ^1.0.0

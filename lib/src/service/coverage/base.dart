@@ -5,5 +5,5 @@ abstract class Coverage {
 
   Coverage(this.deleteFolder);
 
-  Future<void> getCoverage(Logger requestLogger, String path);
+  Future<void> generateCoverage(Logger requestLogger, String path);
 }

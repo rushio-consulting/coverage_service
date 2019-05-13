@@ -8,13 +8,30 @@ import 'package:coverage_service/src/service/coverage/dart.dart';
 import 'package:coverage_service/src/service/coverage/flutter.dart';
 import 'package:grpc/grpc.dart';
 import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:yaml/yaml.dart';
 
+class Processes {
+  const Processes();
+
+  @visibleForTesting
+  Future<ProcessResult> genHtml(String projectDirectoryPath) => Process.run(
+        'genhtml',
+        ['-o', 'coverage', 'coverage/lcov.info'],
+        workingDirectory: projectDirectoryPath,
+        runInShell: true,
+        stdoutEncoding: utf8,
+      );
+}
+
 class CoverageService extends CoverageServiceBase {
   final logger = Logger('CoverageService');
+  final Processes processes;
+
+  CoverageService({this.processes = const Processes()});
 
   @override
   Future<GetCoverageResponse> getCoverage(
@@ -62,20 +79,18 @@ class CoverageService extends CoverageServiceBase {
       requestLogger.fine('Dart project');
       packageCoverage = DartPackageCoverage(request.deleteFolder);
     }
-    await packageCoverage.getCoverage(requestLogger, projectDirectory.path);
+    await packageCoverage.generateCoverage(
+        requestLogger, projectDirectory.path);
     requestLogger.info('genhtml');
-    final genHtmlResult = await Process.run(
-      'genhtml',
-      ['-o', 'coverage', 'coverage/lcov.info'],
-      workingDirectory: projectDirectory.path,
-      runInShell: true,
-      stdoutEncoding: utf8,
-    );
+    final genHtmlResult = await processes.genHtml(projectDirectory.path);
     requestLogger.info('rewrite lcov path');
     await _rewriteLcovPath(projectDirectory.path);
     requestLogger.info('rename /tmp/$id to /tmp/rushio-gen-coverage-$id');
     projectDirectory =
         await projectDirectory.rename('/tmp/rushio-gen-coverage-$id');
+    if (request.deleteFolder) {
+      await projectDirectory.delete(recursive: true);
+    }
     requestLogger.info('extract coverage percentage');
     final String out = genHtmlResult.stdout;
     final percentageLineRegExp = RegExp(r'^\s+lines.+: (\d+.\d*)%.+$');
@@ -83,22 +98,10 @@ class CoverageService extends CoverageServiceBase {
         (line) => percentageLineRegExp.hasMatch(line),
         orElse: () => null);
     if (line == null) {
-      if (request.deleteFolder) {
-        await projectDirectory.delete(recursive: true);
-      }
-      throw GrpcError.internal('NO_PERCENTAGE_FOUND');
+      throw GrpcError.invalidArgument('NO_PERCENTAGE');
     }
     final coverage =
         num.tryParse(percentageLineRegExp.firstMatch(line).group(1));
-    if (coverage == null) {
-      if (request.deleteFolder) {
-        await projectDirectory.delete(recursive: true);
-      }
-      throw GrpcError.internal('NO_PERCENTAGE_FOUND');
-    }
-    if (request.deleteFolder) {
-      await projectDirectory.delete(recursive: true);
-    }
     requestLogger.info('send coverage for $name $coverage%');
     return GetCoverageResponse()..coverage = coverage;
   }

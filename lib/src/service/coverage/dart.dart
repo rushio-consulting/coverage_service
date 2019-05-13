@@ -12,11 +12,11 @@ class DartPackageCoverage extends Coverage {
   DartPackageCoverage(bool deleteFolder) : super(deleteFolder);
 
   @override
-  Future<void> getCoverage(Logger requestLogger, String path) async {
+  Future<void> generateCoverage(Logger requestLogger, String path) async {
     final projectDirectory = Directory(path);
     if (!await File('${projectDirectory.path}/test/coverage.dart').exists()) {
       if (deleteFolder) {
-        await projectDirectory.delete();
+        await projectDirectory.delete(recursive: true);
       }
       throw GrpcError.invalidArgument('DOESNT_CONTAINS_COVERAGE');
     }
@@ -28,36 +28,31 @@ class DartPackageCoverage extends Coverage {
       ],
       workingDirectory: projectDirectory.path,
     );
-    try {
-      requestLogger.info('get observatory uri');
-      final observatoryUri = await _getObservatoryUri(projectDirectory.path);
-      requestLogger.info('collect_coverage');
-      await Process.run(
-        'collect_coverage',
-        [
-          '--uri=$observatoryUri',
-          '--out=coverage/coverage.json',
-          '--wait-paused',
-          '--resume-isolates',
-        ],
-        workingDirectory: projectDirectory.path,
-      );
-      requestLogger.info('format_coverage');
-      await Process.run(
-        'format_coverage',
-        [
-          '--lcov',
-          '--in=coverage/coverage.json',
-          '--out=coverage/lcov.info',
-          '--packages=.packages',
-          '--report-on=lib',
-        ],
-        workingDirectory: projectDirectory.path,
-      );
-    } catch (e) {
-      requestLogger.severe(e);
-      throw GrpcError.internal('FAIL_LAUNCH_OBSERVATORY');
-    }
+    requestLogger.info('get observatory uri');
+    final observatoryUri = await _getObservatoryUri(projectDirectory.path);
+    requestLogger.info('collect_coverage');
+    await Process.run(
+      'collect_coverage',
+      [
+        '--uri=$observatoryUri',
+        '--out=coverage/coverage.json',
+        '--wait-paused',
+        '--resume-isolates',
+      ],
+      workingDirectory: projectDirectory.path,
+    );
+    requestLogger.info('format_coverage');
+    await Process.run(
+      'format_coverage',
+      [
+        '--lcov',
+        '--in=coverage/coverage.json',
+        '--out=coverage/lcov.info',
+        '--packages=.packages',
+        '--report-on=lib',
+      ],
+      workingDirectory: projectDirectory.path,
+    );
   }
 
   Future<String> _getObservatoryUri(String workingDirectory) async {
@@ -79,14 +74,6 @@ class DartPackageCoverage extends Coverage {
         .listen((line) {
       if (line.startsWith(lineStartWith)) {
         completer.complete(line.substring(lineStartWith.length));
-      }
-    });
-    dartResult.stderr
-        .transform(utf8.decoder)
-        .transform(LineSplitter())
-        .listen((line) {
-      if (!completer.isCompleted) {
-        completer.completeError(line);
       }
     });
     return completer.future;
