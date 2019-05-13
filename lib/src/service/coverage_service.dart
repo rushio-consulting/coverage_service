@@ -106,11 +106,17 @@ class CoverageService extends CoverageServiceBase {
     final projectId = projectDirectory.split('/').last;
     final lcov = File('$projectDirectory/coverage/lcov.info');
     final lines = await lcov.readAsLines();
-    final regExp = RegExp('^SF:\/tmp\/$projectId/(.*)\$');
+    final regExpString = '^SF:\/tmp\/$projectId/(.*)\$';
+    logger.info(regExpString);
+    final regExp = RegExp(regExpString);
     for (final line in lines) {
-      final match = regExp.firstMatch(line);
-      final keep = match.group(1);
-      line.replaceFirst(line, 'SF:$keep');
+      logger.info(line);
+      if (regExp.hasMatch(line)) {
+        final match = regExp.firstMatch(line);
+        final keep = match.group(1);
+        logger.info(keep);
+        line.replaceFirst(line, 'SF:$keep');
+      }
     }
     await lcov.writeAsString(lines.join('\n'));
   }
