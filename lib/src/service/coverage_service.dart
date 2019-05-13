@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:coverage_service/src/generated/coverage.pbgrpc.dart';
+import 'package:coverage_service/generated/coverage.pbgrpc.dart';
 import 'package:coverage_service/src/service/coverage/base.dart';
 import 'package:coverage_service/src/service/coverage/dart.dart';
 import 'package:coverage_service/src/service/coverage/flutter.dart';
@@ -72,12 +72,16 @@ class CoverageService extends CoverageServiceBase {
     requestLogger.fine('Check if it\'s Flutter');
     final isFlutter = await _isFlutterProject(pubspec);
     Coverage packageCoverage;
+    String reportOn = request.reportOn;
+    if (!request.hasReportOn()) {
+      reportOn = 'lib';
+    }
     if (isFlutter) {
       requestLogger.fine('Flutter project');
-      packageCoverage = FlutterPackageCoverage(request.deleteFolder);
+      packageCoverage = FlutterPackageCoverage(reportOn, request.deleteFolder);
     } else {
       requestLogger.fine('Dart project');
-      packageCoverage = DartPackageCoverage(request.deleteFolder);
+      packageCoverage = DartPackageCoverage(reportOn, request.deleteFolder);
     }
     await packageCoverage.generateCoverage(
         requestLogger, projectDirectory.path);

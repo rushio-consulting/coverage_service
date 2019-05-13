@@ -9,6 +9,7 @@ part of 'options.dart';
 Options _$parseOptionsResult(ArgResults result) =>
     Options(result['project-path'] as String,
         help: result['help'] as bool,
+        reportOn: result['report-on'] as String,
         projectPathWasParsed: result.wasParsed('project-path'),
         deleteFolder: result['delete-folder'] as bool,
         id: result['id'] as String);
@@ -23,6 +24,7 @@ ArgParser _$populateOptionsParser(ArgParser parser) => parser
       defaultsTo: false,
       negatable: false)
   ..addOption('id', abbr: 'i', help: 'Specify id for the generated folder')
+  ..addOption('report-on', help: 'Specify the folder', defaultsTo: 'lib')
   ..addFlag('help',
       abbr: 'h',
       help: 'Print usage information',

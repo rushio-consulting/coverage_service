@@ -6,6 +6,7 @@ message GetCoverageRequest {
   bytes zip = 1;
   bool deleteFolder = 2;
   string id = 3;
+  string reportOn = 4;
 }
 
 message GetCoverageResponse { double coverage = 1; }

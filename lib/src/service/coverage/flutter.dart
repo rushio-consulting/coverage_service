@@ -4,7 +4,8 @@ import 'package:coverage_service/src/service/coverage/base.dart';
 import 'package:logging/logging.dart';
 
 class FlutterPackageCoverage extends Coverage {
-  FlutterPackageCoverage(bool deleteFolder) : super(deleteFolder);
+  FlutterPackageCoverage(String reportOn, bool deleteFolder)
+      : super(reportOn, deleteFolder);
 
   @override
   Future<void> generateCoverage(Logger requestLogger, String path) async {

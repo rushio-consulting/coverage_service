@@ -14,6 +14,7 @@ class GetCoverageRequest extends $pb.GeneratedMessage {
     ..a<List<int>>(1, 'zip', $pb.PbFieldType.OY)
     ..aOB(2, 'deleteFolder')
     ..aOS(3, 'id')
+    ..aOS(4, 'reportOn')
     ..hasRequiredFields = false
   ;
 
@@ -46,6 +47,11 @@ class GetCoverageRequest extends $pb.GeneratedMessage {
   set id(String v) { $_setString(2, v); }
   bool hasId() => $_has(2);
   void clearId() => clearField(3);
+
+  String get reportOn => $_getS(3, '');
+  set reportOn(String v) { $_setString(3, v); }
+  bool hasReportOn() => $_has(3);
+  void clearReportOn() => clearField(4);
 }
 
 class GetCoverageResponse extends $pb.GeneratedMessage {

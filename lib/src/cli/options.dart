@@ -26,6 +26,9 @@ class Options {
   )
   final String id;
 
+  @CliOption(help: 'Specify the folder', defaultsTo: 'lib')
+  final String reportOn;
+
   @CliOption(
     negatable: false,
     help: 'Print usage information',
@@ -37,6 +40,7 @@ class Options {
   Options(
     this.projectPath, {
     this.help = false,
+    this.reportOn = 'lib',
     this.projectPathWasParsed,
     this.deleteFolder = false,
     this.id,

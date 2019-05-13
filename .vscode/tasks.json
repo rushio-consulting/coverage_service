@@ -8,7 +8,7 @@
       "type": "shell",
       "command": "protoc",
       "args": [
-        "--dart_out=grpc:lib/src/generated",
+        "--dart_out=grpc:lib/generated",
         "-Iprotos",
         "coverage.proto"
       ]

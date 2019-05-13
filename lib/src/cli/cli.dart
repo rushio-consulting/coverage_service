@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:coverage_service/generated/coverage.pbgrpc.dart';
 import 'package:grpc/grpc.dart';
-import 'package:coverage_service/src/generated/coverage.pbgrpc.dart';
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 
@@ -22,7 +22,7 @@ class Cli {
     _d = Directory(projectPath);
   }
 
-  Future<double> getCoverage(String id) async {
+  Future<double> getCoverage(String id, String reportOn) async {
     final files = _d.listSync(recursive: true);
     final archive = Archive();
     for (final file in files) {
@@ -39,7 +39,8 @@ class Cli {
       GetCoverageRequest()
         ..zip = bytes
         ..deleteFolder = deleteFolder
-        ..id = id ?? '',
+        ..id = id ?? ''
+        ..reportOn = reportOn,
     );
     return response.coverage;
   }

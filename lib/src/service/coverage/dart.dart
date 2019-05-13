@@ -9,7 +9,8 @@ import 'package:grpc/grpc.dart';
 import 'package:logging/logging.dart';
 
 class DartPackageCoverage extends Coverage {
-  DartPackageCoverage(bool deleteFolder) : super(deleteFolder);
+  DartPackageCoverage(String reportOn, bool deleteFolder)
+      : super(reportOn, deleteFolder);
 
   @override
   Future<void> generateCoverage(Logger requestLogger, String path) async {
@@ -49,7 +50,7 @@ class DartPackageCoverage extends Coverage {
         '--in=coverage/coverage.json',
         '--out=coverage/lcov.info',
         '--packages=.packages',
-        '--report-on=lib',
+        '--report-on=$reportOn',
       ],
       workingDirectory: projectDirectory.path,
     );

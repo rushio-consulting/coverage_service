@@ -14,6 +14,7 @@ EXPECTED_OUTPUT_COVERAGE_DIR="/tmp/rushio-gen-coverage-$ID/coverage"
 dart bin/main.dart \
     -p /$CURRENT_PROJECT_NAME \
     -i $ID
+    --report-on lib/src
 
 #TODO: Check if last command success 
 # rm -rf $EXPECTED_OUTPUT_COVERAGE_DIR || true # Ignore error in case the directory does not exsit
