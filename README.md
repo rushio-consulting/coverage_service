@@ -1,5 +1,7 @@
 [![Build Status](https://api.travis-ci.org/rushio-consulting/coverage_service.svg?branch=master)](https://travis-ci.org/rushio-consulting/coverage_service)
 
+# Code Coverage Service
+
 ## Why this project
 
 Currently getting coverage in dart is pretty complicated. You need to install a bunch of library and launch some pretty complicated command before you can know how much of your package is tested.
