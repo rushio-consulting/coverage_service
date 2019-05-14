@@ -3,25 +3,56 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 
-class Commands {
-  final logger = Logger('CoverageService.Commands');
+class Command {
+  final logger = Logger('CoverageService.Command');
 
+  @protected
+  Future<Process> start(List<String> arguments, String workingDirectory) {
+    return Process.start(
+      arguments.first,
+      arguments.skip(1).toList(),
+      workingDirectory: workingDirectory,
+      runInShell: true,
+    );
+  }
+
+  @protected
+  Future<ProcessResult> run(List<String> arguments, String workingDirectory) {
+    logger.info('launch ${arguments.join(' ')}');
+    return Process.run(
+      arguments.first,
+      arguments.skip(1).toList(),
+      workingDirectory: workingDirectory,
+      runInShell: true,
+      stdoutEncoding: utf8,
+    );
+  }
+}
+
+class GenHtmlCommand extends Command {
   Future<ProcessResult> genHtml(String projectDirectoryPath) {
     final arguments = ['genhtml', '-o', 'coverage', 'coverage/lcov.info'];
-    return _run(arguments, projectDirectoryPath);
+    return run(arguments, projectDirectoryPath);
   }
+}
 
+class FlutterTestCommand extends Command {
   Future<ProcessResult> flutterTest(String projectDirectoryPath) {
     final arguments = ['flutter', 'test', '--coverage'];
-    return _run(arguments, projectDirectoryPath);
+    return run(arguments, projectDirectoryPath);
   }
+}
 
+class PubGetCommand extends Command {
   Future<ProcessResult> pubGet(String projectDirectoryPath) {
     final arguments = ['pub', 'get'];
-    return _run(arguments, projectDirectoryPath);
+    return run(arguments, projectDirectoryPath);
   }
+}
 
+class StartObservatoryCommand extends Command {
   Future<Process> startObservatory(String projectDirectoryPath) {
     final observatoryPort = Random.secure().nextInt(40000) + 10000;
     final arguments = [
@@ -30,9 +61,11 @@ class Commands {
       '--pause-isolates-on-exit',
       'test/coverage.dart'
     ];
-    return _start(arguments, projectDirectoryPath);
+    return start(arguments, projectDirectoryPath);
   }
+}
 
+class CollectCoverageCommand extends Command {
   Future<ProcessResult> collectCoverage(
       String projectDirectoryPath, String observatoryUri) {
     final arguments = [
@@ -42,9 +75,11 @@ class Commands {
       '--wait-paused',
       '--resume-isolates',
     ];
-    return _run(arguments, projectDirectoryPath);
+    return run(arguments, projectDirectoryPath);
   }
+}
 
+class FormatCoverageCommand extends Command {
   Future<ProcessResult> formatCoverage(String projectDirectoryPath,
       {String reportOn = 'lib'}) {
     final arguments = [
@@ -55,26 +90,34 @@ class Commands {
       '--packages=.packages',
       '--report-on=$reportOn',
     ];
-    return _run(arguments, projectDirectoryPath);
+    return run(arguments, projectDirectoryPath);
   }
+}
 
-  Future<Process> _start(List<String> arguments, String workingDirectory) {
-    return Process.start(
-      arguments.first,
-      arguments.skip(1).toList(),
-      workingDirectory: workingDirectory,
-      runInShell: true,
-    );
-  }
+class Commands {
+  final PubGetCommand pubGetCommand;
+  final StartObservatoryCommand startObservatoryCommand;
+  final CollectCoverageCommand collectCoverageCommand;
+  final FormatCoverageCommand formatCoverageCommand;
 
-  Future<ProcessResult> _run(List<String> arguments, String workingDirectory) {
-    logger.info('launch ${arguments.join(' ')}');
-    return Process.run(
-      arguments.first,
-      arguments.skip(1).toList(),
-      workingDirectory: workingDirectory,
-      runInShell: true,
-      stdoutEncoding: utf8,
-    );
-  }
+  final FlutterTestCommand flutterTestCommand;
+
+  final GenHtmlCommand genHtmlCommand;
+
+  Commands({
+    PubGetCommand pubGetCommand,
+    StartObservatoryCommand startObservatoryCommand,
+    CollectCoverageCommand collectCoverageCommand,
+    FormatCoverageCommand formatCoverageCommand,
+    FlutterTestCommand flutterTestCommand,
+    GenHtmlCommand genHtmlCommand,
+  })  : this.pubGetCommand = pubGetCommand ?? PubGetCommand(),
+        this.startObservatoryCommand =
+            startObservatoryCommand ?? StartObservatoryCommand(),
+        this.collectCoverageCommand =
+            collectCoverageCommand ?? CollectCoverageCommand(),
+        this.formatCoverageCommand =
+            formatCoverageCommand ?? FormatCoverageCommand(),
+        this.flutterTestCommand = flutterTestCommand ?? FlutterTestCommand(),
+        this.genHtmlCommand = genHtmlCommand ?? GenHtmlCommand();
 }

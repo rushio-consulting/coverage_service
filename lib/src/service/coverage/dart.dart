@@ -21,15 +21,18 @@ class DartPackageCoverage extends Coverage {
       }
       throw GrpcError.invalidArgument('DOESNT_CONTAINS_COVERAGE');
     }
-    await commands.pubGet(projectDirectory.path);
+    await commands.pubGetCommand.pubGet(projectDirectory.path);
     final observatoryUri = await _getObservatoryUri(projectDirectory.path);
-    await commands.collectCoverage(projectDirectory.path, observatoryUri);
-    await commands.formatCoverage(projectDirectory.path, reportOn: reportOn);
+    await commands.collectCoverageCommand
+        .collectCoverage(projectDirectory.path, observatoryUri);
+    await commands.formatCoverageCommand
+        .formatCoverage(projectDirectory.path, reportOn: reportOn);
   }
 
   Future<String> _getObservatoryUri(String workingDirectory) async {
     final completer = Completer<String>();
-    final dartResult = await commands.startObservatory(workingDirectory);
+    final dartResult = await commands.startObservatoryCommand
+        .startObservatory(workingDirectory);
     final lineStartWith = 'Observatory listening on ';
     dartResult.stdout
         .transform(utf8.decoder)

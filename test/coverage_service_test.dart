@@ -10,14 +10,12 @@ import 'package:mockito/mockito.dart';
 
 class MockCoverageService extends Mock implements CoverageService {}
 
-class MockProcesses extends Mock implements Commands {}
+class MockGenHtmlCommand extends Mock implements GenHtmlCommand {}
 
 void main() {
   Logger.root.level = Level.OFF;
   Logger.root.onRecord.listen(print);
   final service = CoverageService();
-  final mockProcesses = MockProcesses();
-  final mockableService = CoverageService(processes: mockProcesses);
 
   test('dart project', () async {
     final file = File('test/dart_project.zip');
@@ -126,8 +124,12 @@ void main() {
     final request = GetCoverageRequest()
       ..zip = bytes
       ..deleteFolder = true;
-    when(mockProcesses.genHtml(any))
+    final commands = Commands(
+      genHtmlCommand: MockGenHtmlCommand(),
+    );
+    when(commands.genHtmlCommand.genHtml(any))
         .thenAnswer((_) => Future.value(ProcessResult(0, 0, '', '')));
+    final mockableService = CoverageService(commands: commands);
     try {
       await mockableService.getCoverage(null, request);
       expect(true, false);

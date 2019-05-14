@@ -7,6 +7,6 @@ class FlutterPackageCoverage extends Coverage {
 
   @override
   Future<void> generateCoverage(String path) async {
-    await commands.flutterTest(path);
+    await commands.flutterTestCommand.flutterTest(path);
   }
 }

@@ -17,8 +17,7 @@ class CoverageService extends CoverageServiceBase {
   final logger = Logger('CoverageService');
   final Commands commands;
 
-  CoverageService({Commands processes})
-      : this.commands = processes ?? Commands();
+  CoverageService({Commands commands}) : this.commands = commands ?? Commands();
 
   @override
   Future<GetCoverageResponse> getCoverage(
@@ -73,7 +72,8 @@ class CoverageService extends CoverageServiceBase {
     }
     await packageCoverage.generateCoverage(projectDirectory.path);
     requestLogger.info('genhtml');
-    final genHtmlResult = await commands.genHtml(projectDirectory.path);
+    final genHtmlResult =
+        await commands.genHtmlCommand.genHtml(projectDirectory.path);
     requestLogger.info('rewrite lcov path');
     await _rewriteLcovPath(projectDirectory.path);
     requestLogger.info('rename /tmp/$id to /tmp/rushio-gen-coverage-$id');
