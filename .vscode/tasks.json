@@ -28,6 +28,19 @@
         "${workspaceFolder}:/app",
         "rushioconsulting/coverage_service",
       ]
+    },
+    {
+      "label": "update submodule",
+      "type": "shell",
+      "command": "git",
+      "args": [
+        "submodule",
+        "foreach",
+        "git",
+        "pull",
+        "origin",
+        "master"
+      ]
     }
   ]
 }
