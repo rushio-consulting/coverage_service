@@ -28,6 +28,7 @@ Future<void> main(List<String> args) async {
   final directory = Directory(options.projectPath);
   final archive = _createArchive(directory);
   final bytes = ZipEncoder().encode(archive);
+  print(bytes.length);
   final response = await coverageServiceClient.getCoverage(
     GetCoverageRequest()
       ..zip = bytes
@@ -49,7 +50,9 @@ Archive _createArchive(Directory directory) {
     if (stat.type == FileSystemEntityType.file) {
       File f = file;
       final path = f.path.substring(directory.path.length);
-      if (path.startsWith('build')) {
+      if (path.startsWith('/.dart_tool') ||
+          path.startsWith('/.vscode') ||
+          path.startsWith('/.git')) {
         continue;
       }
       final archiveFile = ArchiveFile(path, stat.size, f.readAsBytesSync());
