@@ -10,7 +10,11 @@
       "args": [
         "--dart_out=grpc:lib/generated",
         "-Iprotos",
-        "coverage.proto"
+        "-Ithird_party/protobuf/src",
+        "-Ithird_party/googleapis",
+        "google/protobuf/empty.proto",
+        "coverage.proto",
+        "files.proto"
       ]
     },
     {

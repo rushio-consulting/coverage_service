@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package rushio.coverage;
+
+import "google/protobuf/empty.proto";
+
+message StartUpload {
+  string projectKey = 1;
+  string id = 2;
+}
+
+message UploadFilePart {
+  string projectKey = 1;
+  string id = 1;
+
+  bytes bytes = 2;
+}
+
+message FinishUpload {
+  string projectKey = 1;
+  string id = 2;
+}
+
+service FilesService {
+  rpc startUploadFiles(StartUpload) returns (google.protobuf.Empty);
+  rpc uploadFilesPart(UploadFilePart) returns (google.protobuf.Empty);
+  rpc finishUploadFile(FinishUpload) returns (google.protobuf.Empty);
+}

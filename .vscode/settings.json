@@ -1,0 +1,9 @@
+{
+  "protoc": {
+    "options": [
+      "--proto_path=${workspaceRoot}/protos/models",
+      "--proto_path=${workspaceRoot}/protos/services",
+      "--proto_path=${workspaceRoot}/third_party",
+    ]
+  }
+}

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:coverage_service/generated/coverage.pb.dart';
+import 'package:coverage_service/src/service/commands.dart';
 import 'package:coverage_service/src/service/coverage_service.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
@@ -9,7 +10,7 @@ import 'package:mockito/mockito.dart';
 
 class MockCoverageService extends Mock implements CoverageService {}
 
-class MockProcesses extends Mock implements Processes {}
+class MockProcesses extends Mock implements Commands {}
 
 void main() {
   Logger.root.level = Level.OFF;

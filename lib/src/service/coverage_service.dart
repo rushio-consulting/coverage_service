@@ -1,37 +1,24 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:coverage_service/generated/coverage.pbgrpc.dart';
+import 'package:coverage_service/src/service/commands.dart';
 import 'package:coverage_service/src/service/coverage/base.dart';
 import 'package:coverage_service/src/service/coverage/dart.dart';
 import 'package:coverage_service/src/service/coverage/flutter.dart';
 import 'package:grpc/grpc.dart';
 import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:yaml/yaml.dart';
 
-class Processes {
-  const Processes();
-
-  @visibleForTesting
-  Future<ProcessResult> genHtml(String projectDirectoryPath) => Process.run(
-        'genhtml',
-        ['-o', 'coverage', 'coverage/lcov.info'],
-        workingDirectory: projectDirectoryPath,
-        runInShell: true,
-        stdoutEncoding: utf8,
-      );
-}
-
 class CoverageService extends CoverageServiceBase {
   final logger = Logger('CoverageService');
-  final Processes processes;
+  final Commands commands;
 
-  CoverageService({this.processes = const Processes()});
+  CoverageService({Commands processes})
+      : this.commands = processes ?? Commands();
 
   @override
   Future<GetCoverageResponse> getCoverage(
@@ -78,15 +65,15 @@ class CoverageService extends CoverageServiceBase {
     }
     if (isFlutter) {
       requestLogger.fine('Flutter project');
-      packageCoverage = FlutterPackageCoverage(reportOn, request.deleteFolder);
+      packageCoverage = FlutterPackageCoverage(request.deleteFolder, commands);
     } else {
       requestLogger.fine('Dart project');
-      packageCoverage = DartPackageCoverage(reportOn, request.deleteFolder);
+      packageCoverage =
+          DartPackageCoverage(reportOn, request.deleteFolder, commands);
     }
-    await packageCoverage.generateCoverage(
-        requestLogger, projectDirectory.path);
+    await packageCoverage.generateCoverage(projectDirectory.path);
     requestLogger.info('genhtml');
-    final genHtmlResult = await processes.genHtml(projectDirectory.path);
+    final genHtmlResult = await commands.genHtml(projectDirectory.path);
     requestLogger.info('rewrite lcov path');
     await _rewriteLcovPath(projectDirectory.path);
     requestLogger.info('rename /tmp/$id to /tmp/rushio-gen-coverage-$id');
@@ -115,15 +102,12 @@ class CoverageService extends CoverageServiceBase {
     final lcov = File('$projectDirectory/coverage/lcov.info');
     final lines = await lcov.readAsLines();
     final regExpString = '^SF:\/tmp\/$projectId/(.*)\$';
-    logger.info(regExpString);
     final regExp = RegExp(regExpString);
     final newLines = <String>[];
     for (final line in lines) {
-      logger.info(line);
       if (regExp.hasMatch(line)) {
         final match = regExp.firstMatch(line);
         final keep = match.group(1);
-        logger.info(keep);
         newLines.add(line.replaceFirst(line, 'SF:$keep'));
       } else {
         newLines.add(line);

@@ -1,20 +1,12 @@
-import 'dart:io';
-
+import 'package:coverage_service/src/service/commands.dart';
 import 'package:coverage_service/src/service/coverage/base.dart';
-import 'package:logging/logging.dart';
 
 class FlutterPackageCoverage extends Coverage {
-  FlutterPackageCoverage(String reportOn, bool deleteFolder)
-      : super(reportOn, deleteFolder);
+  FlutterPackageCoverage(bool deleteFolder, Commands commands)
+      : super(deleteFolder, commands);
 
   @override
-  Future<void> generateCoverage(Logger requestLogger, String path) async {
-    requestLogger.fine('flutter test --coverage');
-    final projectDirectory = Directory(path);
-    await Process.run(
-      'flutter',
-      ['test', '--coverage'],
-      workingDirectory: projectDirectory.path,
-    );
+  Future<void> generateCoverage(String path) async {
+    await commands.flutterTest(path);
   }
 }

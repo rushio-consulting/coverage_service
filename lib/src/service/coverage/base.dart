@@ -1,10 +1,10 @@
-import 'package:logging/logging.dart';
+import 'package:coverage_service/src/service/commands.dart';
 
 abstract class Coverage {
-  final String reportOn;
+  final Commands commands;
   final bool deleteFolder;
 
-  Coverage(this.reportOn, this.deleteFolder);
+  Coverage(this.deleteFolder, this.commands);
 
-  Future<void> generateCoverage(Logger requestLogger, String path);
+  Future<void> generateCoverage(String path);
 }
