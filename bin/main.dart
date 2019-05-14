@@ -52,6 +52,7 @@ Archive _createArchive(Directory directory) {
       final path = f.path.substring(directory.path.length);
       if (path.startsWith('/.dart_tool') ||
           path.startsWith('/.vscode') ||
+          path.startsWith('/build') ||
           path.startsWith('/.git')) {
         continue;
       }
