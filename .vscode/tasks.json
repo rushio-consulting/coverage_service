@@ -26,7 +26,36 @@
         "--rm",
         "-v",
         "${workspaceFolder}:/app",
-        "rushioconsulting/coverage_service",
+        "rushioconsulting/coverage_service"
+      ]
+    },
+    {
+      "label": "init submodule",
+      "dependsOn": [
+        "git sub sync",
+        "git sub update"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "git sub sync",
+      "type": "shell",
+      "command": "git",
+      "args": [
+        "submodule",
+        "sync",
+        "--recursive"
+      ]
+    },
+    {
+      "label": "git sub update",
+      "type": "shell",
+      "command": "git",
+      "args": [
+        "submodule",
+        "update",
+        "--init",
+        "--recursive"
       ]
     },
     {
