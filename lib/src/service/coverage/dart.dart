@@ -5,8 +5,10 @@ import 'dart:io';
 import 'package:coverage_service/src/service/commands.dart';
 import 'package:coverage_service/src/service/coverage/base.dart';
 import 'package:grpc/grpc.dart';
+import 'package:logging/logging.dart';
 
 class DartPackageCoverage extends Coverage {
+  final Logger logger = Logger('CoverageService.DartPackageCoverage');
   final String reportOn;
 
   DartPackageCoverage(this.reportOn, bool deleteFolder, Commands commands)
@@ -19,6 +21,7 @@ class DartPackageCoverage extends Coverage {
       if (deleteFolder) {
         await projectDirectory.delete(recursive: true);
       }
+      logger.severe('Project doesn\'t contain coverage.dart');
       throw GrpcError.invalidArgument('DOESNT_CONTAINS_COVERAGE');
     }
     await commands.pubGetCommand.pubGet(projectDirectory.path);

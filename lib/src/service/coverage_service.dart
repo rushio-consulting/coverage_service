@@ -30,7 +30,7 @@ class CoverageService extends CoverageServiceBase {
         request.hasId() && request.id.isNotEmpty ? request.id : _generateId();
     logger.fine('id is $id');
     var projectDirectory = Directory('/tmp/$id');
-    logger.info('start coverage ');
+    logger.info('start coverage');
     logger.info('extract from zip');
     final archive = ZipDecoder().decodeBytes(bytes);
     for (ArchiveFile file in archive) {
@@ -89,6 +89,7 @@ class CoverageService extends CoverageServiceBase {
         (line) => percentageLineRegExp.hasMatch(line),
         orElse: () => null);
     if (line == null) {
+      requestLogger.severe('no percentage found in the output of genhtml');
       throw GrpcError.invalidArgument('NO_PERCENTAGE');
     }
     final coverage =

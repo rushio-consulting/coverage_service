@@ -11,3 +11,4 @@ build/
 doc/api/
 
 coverage
+coverage_service_server.*.log

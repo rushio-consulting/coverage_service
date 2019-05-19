@@ -28,7 +28,6 @@ Future<void> main(List<String> args) async {
   final directory = Directory(options.projectPath);
   final archive = _createArchive(directory);
   final bytes = ZipEncoder().encode(archive);
-  print(bytes.length);
   final response = await coverageServiceClient.getCoverage(
     GetCoverageRequest()
       ..zip = bytes
@@ -38,7 +37,6 @@ Future<void> main(List<String> args) async {
   );
   await channel.shutdown();
   final coverage = response.coverage;
-  Logger.root.info('coverage: $coverage%');
   print(coverage);
 }
 
